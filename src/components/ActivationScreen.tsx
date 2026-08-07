@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Alarm, MediaItem, VideoClip, VoiceLocale } from '../types';
 import { speak } from '../services/speech';
+import { startAlarmSound, stopAlarmSound, stopVibration, vibrate } from '../services/alarmSound';
 import { MediaClipEmbed } from './MediaClipEmbed';
 
 interface Props {
@@ -52,8 +53,12 @@ export function ActivationScreen({
   }, [affirmationIndex, affirmations, currentAffirmation, voiceLocale]);
 
   useEffect(() => {
+    startAlarmSound();
+    vibrate([500, 300, 500, 300, 500]);
     return () => {
       window.speechSynthesis?.cancel();
+      stopAlarmSound();
+      stopVibration();
     };
   }, []);
 
@@ -62,7 +67,16 @@ export function ActivationScreen({
   const handleDismiss = () => {
     if (!canDismiss) return;
     window.speechSynthesis?.cancel();
+    stopAlarmSound();
+    stopVibration();
     onDismiss(gratitudeText.trim());
+  };
+
+  const handleSnooze = () => {
+    window.speechSynthesis?.cancel();
+    stopAlarmSound();
+    stopVibration();
+    onSnooze();
   };
 
   return (
@@ -95,7 +109,7 @@ export function ActivationScreen({
         </div>
 
         <div className="activation-actions">
-          <button onClick={onSnooze} className="secondary">Posponer 5 min</button>
+          <button onClick={handleSnooze} className="secondary">Posponer 5 min</button>
           <button onClick={handleDismiss} className="primary" disabled={!canDismiss}>
             Estoy listo, apagar
           </button>

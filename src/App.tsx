@@ -1,6 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAlarmClock } from './hooks/useAlarmClock';
 import { useFocusWatchdog } from './hooks/useFocusWatchdog';
+import { useWakeLock } from './hooks/useWakeLock';
+import { primeAudio } from './services/alarmSound';
 import { AlarmManager } from './components/AlarmManager';
 import { MediaLibrary } from './components/MediaLibrary';
 import { AffirmationManager } from './components/AffirmationManager';
@@ -54,6 +56,15 @@ export default function App() {
   const [includeMovieQuotes, setIncludeMovieQuotes] = useState<boolean>(() => loadIncludeMovieQuotes());
   const [videoClips, setVideoClips] = useState<VideoClip[]>(() => loadVideoClips());
   const [voiceLocale, setVoiceLocale] = useState<VoiceLocale>(() => loadVoiceLocale());
+
+  const hasEnabledAlarm = alarms.some((a) => a.enabled);
+  useWakeLock(hasEnabledAlarm || activeAlarm !== null);
+
+  useEffect(() => {
+    const unlock = () => primeAudio();
+    document.addEventListener('pointerdown', unlock);
+    return () => document.removeEventListener('pointerdown', unlock);
+  }, []);
 
   const handleToggleMovieQuotes = (value: boolean) => {
     setIncludeMovieQuotes(value);

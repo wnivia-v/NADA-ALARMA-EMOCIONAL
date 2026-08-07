@@ -56,9 +56,44 @@ este momento** — justo al despertar, cuando más cuesta arrancar el día.
   contenido machista y dinámicas cuestionables con su comunidad de
   seguidores); inclúyelo o quítalo del panel de frases según tu criterio.
 
+- **Alarma "con esteroides"**: cuando suena, ya no es solo la voz — hay un
+  sonido de alarma real (sirena sintetizada, sin archivos de audio
+  externos) en bucle hasta que la apagas, vibración en dispositivos
+  compatibles, la pantalla no se apaga sola mientras hay una alarma armada
+  (Wake Lock), y la app se puede instalar como PWA en el celular (ícono en
+  el escritorio, funciona offline). La idea: que con esta alarma sola te
+  baste, sin tener que poner diez en el reloj del teléfono.
+
 Todo se guarda en `localStorage` del navegador (alarmas, frases, diario,
 configuración e historial del vigía); las fotos/videos son solo de la
 sesión actual por ahora.
+
+### Qué tan confiable es la alarma (léelo antes de confiar en una sola)
+
+Instalada como PWA, con la pantalla encendida o el Wake Lock activo, y el
+teléfono sin bloquear manualmente, esta alarma suena fuerte, vibra y no se
+detiene hasta que completas el reto de gratitud — así de directo.
+
+Ahora la parte honesta: **ningún sitio web ni PWA puede garantizar que un
+temporizador siga corriendo con el teléfono bloqueado y guardado**. Es una
+restricción del sistema operativo (Android/iOS suspenden las pestañas en
+segundo plano para ahorrar batería), no algo que se pueda resolver desde
+JavaScript. El Wake Lock ayuda mientras la app está en primer plano y la
+pantalla encendida, pero se libera en cuanto bloqueas el teléfono a mano.
+
+Para depender de esta alarma con confianza real:
+- Deja el teléfono cargando, con la pantalla accesible y la app abierta
+  (no bloqueado) — así es como los relojes de alarma "de verdad" en la web
+  logran sonar de forma confiable sin batería infinita.
+- O, si quieres un respaldo cero-esfuerzo: pon **una sola** alarma nativa
+  del teléfono a la misma hora (no diez) como disparador de emergencia; si
+  esta app no llegó a sonar por estar el teléfono bloqueado, la nativa
+  igual te despierta, y puedes abrir esta app para el resto de la
+  experiencia (frases, gratitud, videos).
+- Para una garantía real de "suena aunque el teléfono esté guardado y
+  bloqueado toda la noche", el único camino es una app nativa de Android
+  con `AlarmManager` (o iOS con permisos especiales de alertas críticas) —
+  eso queda fuera de lo que una web/PWA puede prometer honestamente.
 
 ### Limitación importante del Vigía
 
@@ -108,10 +143,13 @@ responsabilidad de qué mostrar quedan de tu lado.
   web/PWA no puede pedir. Sería un proyecto aparte (o envolver esta app con
   Capacitor + un plugin nativo) si se quiere ir por ese camino.
 - Persistir fotos/videos (IndexedDB) para que sobrevivan al recargar.
-- Notificaciones push / PWA para que la alarma suene aunque la pestaña esté
-  cerrada.
+- Empaquetar como app nativa (Capacitor/Android) para lograr una alarma
+  que suene incluso con el teléfono bloqueado — ver la sección de
+  confiabilidad arriba.
 - Estadísticas del diario de gratitud y del vigía (rachas, tareas más
   repetidas, etc).
+- Íconos de PWA con diseño real (los actuales son un placeholder simple
+  generado por código, no un diseño final).
 
 ## Desarrollo
 
