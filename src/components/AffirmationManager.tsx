@@ -4,9 +4,17 @@ interface Props {
   affirmations: string[];
   onAdd: (text: string) => void;
   onRemove: (index: number) => void;
+  includeMovieQuotes: boolean;
+  onToggleMovieQuotes: (value: boolean) => void;
 }
 
-export function AffirmationManager({ affirmations, onAdd, onRemove }: Props) {
+export function AffirmationManager({
+  affirmations,
+  onAdd,
+  onRemove,
+  includeMovieQuotes,
+  onToggleMovieQuotes,
+}: Props) {
   const [text, setText] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -33,6 +41,14 @@ export function AffirmationManager({ affirmations, onAdd, onRemove }: Props) {
         />
         <button type="submit" className="primary">Agregar</button>
       </form>
+      <label className="switch-row">
+        <input
+          type="checkbox"
+          checked={includeMovieQuotes}
+          onChange={(e) => onToggleMovieQuotes(e.target.checked)}
+        />
+        Incluir frases de películas (Rocky, The Pursuit of Happyness, Gladiator...)
+      </label>
       <ul className="affirmation-list">
         {affirmations.map((a, i) => (
           <li key={i}>

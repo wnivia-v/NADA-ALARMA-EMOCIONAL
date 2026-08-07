@@ -25,18 +25,63 @@ este momento** — justo al despertar, cuando más cuesta arrancar el día.
   posponer 5 minutos.
 - **Diario de gratitud**: cada cosa que escribes al apagar la alarma queda
   guardada y visible como historial.
+- **Frases de películas**: activable desde el panel de frases, mete al
+  reparto citas de Rocky Balboa, The Pursuit of Happyness, Gladiator,
+  Coach Carter, Braveheart y otras — mismo estilo de energía "levántate y
+  ve por ello".
+- **Vigía anti-scroll**: detecta cuánto tiempo llevas fuera de la app (ver
+  limitación técnica abajo) y, si vuelves después de X minutos, te
+  pregunta si fue scroll en redes. Si dices que sí, te muestra una frase de
+  película y (si configuraste Groq) un mensaje generado por IA, y te reta a
+  escribir la tarea productiva que vas a hacer en vez de seguir scrolleando.
+  Todo queda en un historial.
 
-Todo se guarda en `localStorage` del navegador (alarmas, frases y diario);
-las fotos/videos son solo de la sesión actual por ahora.
+Todo se guarda en `localStorage` del navegador (alarmas, frases, diario,
+configuración e historial del vigía); las fotos/videos son solo de la
+sesión actual por ahora.
+
+### Limitación importante del Vigía
+
+Una app web (o una PWA instalada en el móvil) **no tiene forma de ver qué
+otra app estás usando** — eso vive fuera de su sandbox. Lo que sí puede
+detectar, con la API de visibilidad del navegador, es cuánto tiempo estuvo
+esta pestaña/app en segundo plano. Por eso el Vigía funciona así: "llevas
+X minutos fuera de aquí, ¿fue scroll?" en vez de "detecté que abriste
+TikTok 12 minutos". Es una aproximación honesta con las herramientas de una
+web app; ver más abajo cómo llevarlo a detección real por app.
+
+## IA (Groq, gratis)
+
+El "empujón" motivacional del Vigía puede generarse con IA en vez de ser
+siempre la misma frase. Se reutiliza el mismo proveedor que ya usa
+`NADA-AMORES-Y-TRAICIONES` para no pagar: **Groq**, con tier gratuito y sin
+tarjeta de crédito (30 consultas/minuto, 1000/día en el momento de
+escribir esto — verificar en https://console.groq.com).
+
+```bash
+cp .env.example .env.local
+# rellena VITE_GROQ_API_KEY con tu key de https://console.groq.com
+```
+
+Si no configuras la key, la app sigue funcionando normal: el Vigía usa
+solo las frases de películas, sin llamar a ningún modelo.
+
+⚠️ Igual que en el otro proyecto: Vite inyecta esta key en el bundle del
+cliente en texto plano. Sirve para uso local o para tu propio dispositivo;
+no la despliegues en un sitio público sin poner la llamada detrás de un
+backend/proxy que la esconda.
 
 ## Ideas para siguientes pasos
 
-- Conectar una IA real (por ejemplo, la API de Claude) para generar frases
-  personalizadas en vez de solo rotar una lista fija.
+- Detección real por app: para eso se necesita una app nativa de Android
+  con el permiso `PACKAGE_USAGE_STATS` (Digital Wellbeing) — algo que una
+  web/PWA no puede pedir. Sería un proyecto aparte (o envolver esta app con
+  Capacitor + un plugin nativo) si se quiere ir por ese camino.
 - Persistir fotos/videos (IndexedDB) para que sobrevivan al recargar.
 - Notificaciones push / PWA para que la alarma suene aunque la pestaña esté
   cerrada.
-- Estadísticas del diario de gratitud (rachas, palabras más usadas, etc).
+- Estadísticas del diario de gratitud y del vigía (rachas, tareas más
+  repetidas, etc).
 
 ## Desarrollo
 

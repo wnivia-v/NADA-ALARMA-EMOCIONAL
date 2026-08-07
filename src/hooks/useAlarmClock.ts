@@ -1,10 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Alarm } from '../types';
 import { loadAlarms, saveAlarms } from '../storage';
-
-function createId(): string {
-  return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-}
+import { createId } from '../utils';
 
 function currentTimeParts(date: Date): { time: string; day: number } {
   const hh = String(date.getHours()).padStart(2, '0');

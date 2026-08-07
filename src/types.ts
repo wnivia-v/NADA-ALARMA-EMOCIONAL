@@ -18,3 +18,16 @@ export interface GratitudeEntry {
   text: string;
   date: string; // ISO string
 }
+
+export interface FocusLogEntry {
+  id: string;
+  detectedAt: string; // ISO string
+  awayMinutes: number;
+  wasScrolling: boolean;
+  task: string; // tarea productiva elegida, vacío si wasScrolling=false
+}
+
+export interface FocusSettings {
+  enabled: boolean;
+  thresholdMinutes: number;
+}
