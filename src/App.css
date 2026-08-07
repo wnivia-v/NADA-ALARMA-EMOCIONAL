@@ -1,0 +1,267 @@
+.app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.app-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.app-header h1 {
+  font-size: 2.2rem;
+}
+
+.app-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid #262a3a;
+  border-radius: 14px;
+  padding: 1.25rem;
+}
+
+.hint {
+  font-size: 0.85rem;
+}
+
+.empty {
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+/* Alarm manager */
+.alarm-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.alarm-form input[type='time'] {
+  width: auto;
+}
+
+.day-picker, .days-row {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.day {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: #12141d;
+  color: var(--text-dim);
+  padding: 0;
+}
+
+.day.active {
+  background: var(--accent);
+  color: #1a1200;
+}
+
+.day-chip {
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  background: #12141d;
+  color: var(--text-dim);
+}
+
+.day-chip.on {
+  background: var(--accent);
+  color: #1a1200;
+}
+
+.alarm-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.alarm-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #12141d;
+  border-radius: 10px;
+  padding: 0.6rem 0.8rem;
+}
+
+.alarm-item.disabled {
+  opacity: 0.5;
+}
+
+.alarm-item strong {
+  font-size: 1.4rem;
+  margin-right: 0.6rem;
+}
+
+.alarm-label {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+}
+
+.alarm-actions {
+  display: flex;
+  gap: 0.4rem;
+}
+
+/* Affirmations */
+.affirmation-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.affirmation-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.affirmation-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  background: #12141d;
+  border-radius: 8px;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.9rem;
+}
+
+/* Media library */
+.media-grid {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 0.6rem;
+}
+
+.media-item {
+  position: relative;
+}
+
+.media-item img, .media-item video {
+  width: 100%;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.media-item button {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+}
+
+/* Gratitude journal */
+.journal-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.journal-list li {
+  background: #12141d;
+  border-radius: 8px;
+  padding: 0.5rem 0.7rem;
+}
+
+.journal-list time {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+
+.journal-list p {
+  margin: 0.2rem 0 0;
+  color: var(--text);
+}
+
+/* Activation screen */
+.activation-screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  z-index: 1000;
+  background: #05060a;
+}
+
+.activation-media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.55);
+}
+
+.activation-overlay {
+  position: relative;
+  z-index: 1;
+  max-width: 480px;
+  width: 90%;
+  text-align: center;
+  background: rgba(16, 18, 26, 0.75);
+  border-radius: 18px;
+  padding: 2rem 1.75rem;
+  backdrop-filter: blur(6px);
+}
+
+.activation-time {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.activation-affirmation {
+  font-size: 1.2rem;
+  color: var(--text);
+  margin: 1rem 0 1.5rem;
+  min-height: 3.5rem;
+}
+
+.gratitude-challenge {
+  text-align: left;
+  margin-bottom: 1.25rem;
+}
+
+.gratitude-challenge label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  margin-bottom: 0.4rem;
+}
+
+.activation-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+}

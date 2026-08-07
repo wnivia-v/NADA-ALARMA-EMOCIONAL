@@ -1,0 +1,89 @@
+import { useState } from 'react';
+import { useAlarmClock } from './hooks/useAlarmClock';
+import { AlarmManager } from './components/AlarmManager';
+import { MediaLibrary } from './components/MediaLibrary';
+import { AffirmationManager } from './components/AffirmationManager';
+import { GratitudeJournal } from './components/GratitudeJournal';
+import { ActivationScreen } from './components/ActivationScreen';
+import type { GratitudeEntry, MediaItem } from './types';
+import { loadAffirmations, loadGratitude, saveAffirmations, saveGratitude } from './storage';
+import './App.css';
+
+function createId(): string {
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+export default function App() {
+  const {
+    alarms,
+    addAlarm,
+    deleteAlarm,
+    toggleAlarm,
+    activeAlarm,
+    dismissActiveAlarm,
+    snoozeActiveAlarm,
+  } = useAlarmClock();
+
+  const [media, setMedia] = useState<MediaItem[]>([]);
+  const [affirmations, setAffirmations] = useState<string[]>(() => loadAffirmations());
+  const [gratitude, setGratitude] = useState<GratitudeEntry[]>(() => loadGratitude());
+
+  const handleAddAffirmation = (text: string) => {
+    setAffirmations((prev) => {
+      const next = [...prev, text];
+      saveAffirmations(next);
+      return next;
+    });
+  };
+
+  const handleRemoveAffirmation = (index: number) => {
+    setAffirmations((prev) => {
+      const next = prev.filter((_, i) => i !== index);
+      saveAffirmations(next);
+      return next;
+    });
+  };
+
+  const handleDismiss = (gratitudeText: string) => {
+    setGratitude((prev) => {
+      const next = [...prev, { id: createId(), text: gratitudeText, date: new Date().toISOString() }];
+      saveGratitude(next);
+      return next;
+    });
+    dismissActiveAlarm();
+  };
+
+  return (
+    <div className="app">
+      <header className="app-header">
+        <h1>NADA Alarma Emocional</h1>
+        <p>Una alarma que te recuerda tu superpoder: ya tienes todo lo que necesitas.</p>
+      </header>
+
+      <main className="app-grid">
+        <AlarmManager alarms={alarms} onAdd={addAlarm} onToggle={toggleAlarm} onDelete={deleteAlarm} />
+        <AffirmationManager
+          affirmations={affirmations}
+          onAdd={handleAddAffirmation}
+          onRemove={handleRemoveAffirmation}
+        />
+        <MediaLibrary
+          media={media}
+          onAdd={(items) => setMedia((prev) => [...prev, ...items])}
+          onRemove={(id) => setMedia((prev) => prev.filter((m) => m.id !== id))}
+        />
+        <GratitudeJournal entries={gratitude} />
+      </main>
+
+      {activeAlarm && (
+        <ActivationScreen
+          alarm={activeAlarm}
+          media={media}
+          affirmations={affirmations}
+          onDismiss={handleDismiss}
+          onSnooze={snoozeActiveAlarm}
+        />
+      )}
+    </div>
+  );
+}

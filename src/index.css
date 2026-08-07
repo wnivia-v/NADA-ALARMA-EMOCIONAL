@@ -1,0 +1,80 @@
+:root {
+  color-scheme: dark;
+  --bg: #10121a;
+  --panel: #1a1d29;
+  --accent: #ff8a3d;
+  --text: #f4f4f6;
+  --text-dim: #a7a9b8;
+  --danger: #e5484d;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  margin: 0;
+  min-height: 100vh;
+}
+
+body {
+  background: radial-gradient(circle at top, #1e2130, var(--bg));
+  color: var(--text);
+}
+
+h1, h2 {
+  margin: 0 0 0.5rem;
+}
+
+p {
+  margin: 0 0 0.5rem;
+  color: var(--text-dim);
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  background: #2a2e40;
+  color: var(--text);
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+button.primary {
+  background: var(--accent);
+  color: #1a1200;
+  font-weight: 600;
+}
+
+button.secondary {
+  background: transparent;
+  border: 1px solid var(--text-dim);
+}
+
+button.danger {
+  background: transparent;
+  color: var(--danger);
+  border: 1px solid var(--danger);
+}
+
+button.small {
+  padding: 0.25rem 0.6rem;
+  font-size: 0.8rem;
+}
+
+input, textarea {
+  font: inherit;
+  background: #12141d;
+  border: 1px solid #33364a;
+  border-radius: 8px;
+  padding: 0.5rem 0.7rem;
+  color: var(--text);
+  width: 100%;
+}
