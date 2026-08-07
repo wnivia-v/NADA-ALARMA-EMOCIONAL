@@ -41,10 +41,20 @@ este momento** — justo al despertar, cuando más cuesta arrancar el día.
   leen en el idioma que elijas (traducción propia al español, no un doblaje
   oficial). No se reproduce audio real de las películas, solo texto leído
   por la voz sintética del navegador.
-- **Escenas de YouTube**: pega el link de un video de YouTube o YouTube
-  Music (una escena, una canción, lo que sea) y se incrusta con el
-  reproductor oficial de YouTube durante la alarma y el reto del vigía, sin
-  descargar ni redistribuir nada.
+- **Escenas de YouTube y TikTok**: pega el link de un video de YouTube,
+  YouTube Music o TikTok (una escena, una canción, un clip motivacional) y
+  se incrusta con el reproductor oficial de esa plataforma durante la
+  alarma y el reto del vigía, sin descargar ni redistribuir nada. Los links
+  cortos de TikTok (vt.tiktok.com) no se pueden resolver desde el
+  navegador; usa el link completo (tiktok.com/@usuario/video/...).
+- **"Modo Guerra"**: un mantra corto inspirado en el concepto/marca personal
+  de El Temach (Luis Castilleja), incluido en la rotación de frases junto
+  con las de películas. Es una frase propia inspirada en su concepto, no
+  una cita textual suya — no se encontró una fuente primaria verificable
+  para atribuirle una cita exacta, así que no se inventó ninguna. Nota: es
+  una figura pública controvertida (varios medios reportan críticas por
+  contenido machista y dinámicas cuestionables con su comunidad de
+  seguidores); inclúyelo o quítalo del panel de frases según tu criterio.
 
 Todo se guarda en `localStorage` del navegador (alarmas, frases, diario,
 configuración e historial del vigía); las fotos/videos son solo de la

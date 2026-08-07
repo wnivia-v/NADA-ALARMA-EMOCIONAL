@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Alarm, MediaItem, VideoClip, VoiceLocale } from '../types';
 import { speak } from '../services/speech';
-import { YouTubeEmbed } from './YouTubeEmbed';
+import { MediaClipEmbed } from './MediaClipEmbed';
 
 interface Props {
   alarm: Alarm;
@@ -78,7 +78,7 @@ export function ActivationScreen({
         <h1>{alarm.label}</h1>
         <p className="activation-affirmation">{currentAffirmation}</p>
 
-        {videoClip && <YouTubeEmbed youtubeId={videoClip.youtubeId} label={videoClip.label} />}
+        {videoClip && <MediaClipEmbed clip={videoClip} />}
 
         <div className="gratitude-challenge">
           <label htmlFor="gratitude-input">

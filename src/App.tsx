@@ -11,6 +11,7 @@ import { FocusSettingsPanel } from './components/FocusSettingsPanel';
 import { VideoClipManager } from './components/VideoClipManager';
 import { VoiceSettings } from './components/VoiceSettings';
 import { MOVIE_QUOTES } from './data/movieQuotes';
+import { INFLUENCER_CONCEPTS } from './data/influencerConcepts';
 import type { GratitudeEntry, MediaItem, VideoClip, VoiceLocale } from './types';
 import {
   loadAffirmations,
@@ -86,7 +87,8 @@ export default function App() {
       const text = voiceLocale.startsWith('es') ? q.quoteEs : q.quote;
       return `"${text}" — ${q.character}, ${q.movie}`;
     });
-    return [...affirmations, ...movieTexts];
+    const conceptTexts = INFLUENCER_CONCEPTS.map((c) => `${c.phrase} (${c.source})`);
+    return [...affirmations, ...movieTexts, ...conceptTexts];
   }, [affirmations, includeMovieQuotes, voiceLocale]);
 
   const handleAddAffirmation = (text: string) => {

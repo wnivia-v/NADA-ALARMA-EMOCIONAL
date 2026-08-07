@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { randomMovieQuote } from '../data/movieQuotes';
 import { generatePepTalk, isAiAvailable } from '../services/groq';
 import { speak } from '../services/speech';
-import { YouTubeEmbed } from './YouTubeEmbed';
+import { MediaClipEmbed } from './MediaClipEmbed';
 import type { VideoClip, VoiceLocale } from '../types';
 
 interface Props {
@@ -79,7 +79,7 @@ export function FocusCheckIn({ awayMinutes, videoClips, voiceLocale, onResolve }
             {pepTalkLoading && <p className="hint">Preparando tu empujón personalizado...</p>}
             {pepTalk && <p className="pep-talk">{pepTalk}</p>}
 
-            {videoClip && <YouTubeEmbed youtubeId={videoClip.youtubeId} label={videoClip.label} />}
+            {videoClip && <MediaClipEmbed clip={videoClip} />}
 
             <div className="gratitude-challenge">
               <label htmlFor="focus-task">

@@ -200,9 +200,30 @@
   border-radius: 6px;
 }
 
+.clip-badge {
+  width: 64px;
+  height: 36px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: #1e2130;
+  color: var(--accent);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
 .clip-item span {
   flex: 1;
   font-size: 0.85rem;
+}
+
+.tiktok-embed-wrapper {
+  aspect-ratio: auto;
+  max-height: 70vh;
+  overflow-y: auto;
 }
 
 .error-text {

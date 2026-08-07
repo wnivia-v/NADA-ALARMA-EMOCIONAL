@@ -34,9 +34,13 @@ export interface FocusSettings {
 
 export type VoiceLocale = 'es-ES' | 'es-419' | 'en-GB' | 'en-US';
 
+export type VideoProvider = 'youtube' | 'tiktok';
+
 export interface VideoClip {
   id: string;
   url: string;
   label: string;
-  youtubeId: string;
+  provider: VideoProvider;
+  externalId: string;
+  thumbnail?: string;
 }
