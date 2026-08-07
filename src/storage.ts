@@ -1,4 +1,4 @@
-import type { Alarm, FocusLogEntry, FocusSettings, GratitudeEntry } from './types';
+import type { Alarm, FocusLogEntry, FocusSettings, GratitudeEntry, VideoClip, VoiceLocale } from './types';
 
 const ALARMS_KEY = 'nada.alarms';
 const AFFIRMATIONS_KEY = 'nada.affirmations';
@@ -6,6 +6,8 @@ const GRATITUDE_KEY = 'nada.gratitude';
 const FOCUS_LOG_KEY = 'nada.focusLog';
 const FOCUS_SETTINGS_KEY = 'nada.focusSettings';
 const INCLUDE_MOVIES_KEY = 'nada.includeMovieQuotes';
+const VIDEO_CLIPS_KEY = 'nada.videoClips';
+const VOICE_LOCALE_KEY = 'nada.voiceLocale';
 
 export const DEFAULT_FOCUS_SETTINGS: FocusSettings = { enabled: true, thresholdMinutes: 15 };
 
@@ -76,4 +78,20 @@ export function loadIncludeMovieQuotes(): boolean {
 
 export function saveIncludeMovieQuotes(value: boolean): void {
   writeJSON(INCLUDE_MOVIES_KEY, value);
+}
+
+export function loadVideoClips(): VideoClip[] {
+  return readJSON<VideoClip[]>(VIDEO_CLIPS_KEY, []);
+}
+
+export function saveVideoClips(clips: VideoClip[]): void {
+  writeJSON(VIDEO_CLIPS_KEY, clips);
+}
+
+export function loadVoiceLocale(): VoiceLocale {
+  return readJSON<VoiceLocale>(VOICE_LOCALE_KEY, 'es-ES');
+}
+
+export function saveVoiceLocale(locale: VoiceLocale): void {
+  writeJSON(VOICE_LOCALE_KEY, locale);
 }

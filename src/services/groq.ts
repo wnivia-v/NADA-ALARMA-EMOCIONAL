@@ -5,6 +5,8 @@
 // Bien para uso local/desktop, no para un deploy público (ver README).
 // =============================================================================
 
+import type { VoiceLocale } from '../types';
+
 const IS_DEV_BROWSER =
   typeof window !== 'undefined' &&
   (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
@@ -34,13 +36,15 @@ export function isAiAvailable(): boolean {
 export async function generatePepTalk(
   awayMinutes: number,
   taskHint: string,
+  locale: VoiceLocale = 'es-ES',
 ): Promise<string | null> {
   const apiKey = getApiKey();
   if (!apiKey) return null;
 
-  const prompt = `Actúa como un entrenador motivacional estilo Rocky Balboa o Chris Gardner (The Pursuit of Happyness). La persona acaba de pasar ${awayMinutes} minutos haciendo scroll en redes sociales (TikTok, Instagram, etc.) en vez de trabajar. ${
-    taskHint ? `Dice que ahora quiere enfocarse en: "${taskHint}".` : ''
-  } Escríbele en español, en 2 o 3 frases cortas, un mensaje directo y motivador (sin regañarla de forma agresiva) que la empuje a dejar el celular y arrancar esa tarea ya. No uses comillas ni markdown, solo el texto del mensaje.`;
+  const outputLanguage = locale.startsWith('en') ? 'English' : 'Spanish';
+  const prompt = `Act like a tough-love movie sports coach (in the spirit of Rocky Balboa or Chris Gardner from The Pursuit of Happyness, but do not quote them directly). The person just spent ${awayMinutes} minutes scrolling social media (TikTok, Instagram, etc.) instead of working. ${
+    taskHint ? `They say they now want to focus on: "${taskHint}".` : ''
+  } Write them, in ${outputLanguage}, 2 or 3 short sentences: a direct, motivating message (not aggressive scolding) that pushes them to put the phone down and start that task right now. No quotation marks, no markdown, just the message text.`;
 
   try {
     const response = await fetch(GROQ_API_URL, {

@@ -35,6 +35,16 @@ este momento** — justo al despertar, cuando más cuesta arrancar el día.
   película y (si configuraste Groq) un mensaje generado por IA, y te reta a
   escribir la tarea productiva que vas a hacer en vez de seguir scrolleando.
   Todo queda en un historial.
+- **Voz en el idioma/acento que elijas**: español (España), español
+  (Latinoamérica), inglés (UK) o inglés (US) — usa las voces de síntesis de
+  voz instaladas en tu navegador/dispositivo. Las frases de películas se
+  leen en el idioma que elijas (traducción propia al español, no un doblaje
+  oficial). No se reproduce audio real de las películas, solo texto leído
+  por la voz sintética del navegador.
+- **Escenas de YouTube**: pega el link de un video de YouTube o YouTube
+  Music (una escena, una canción, lo que sea) y se incrusta con el
+  reproductor oficial de YouTube durante la alarma y el reto del vigía, sin
+  descargar ni redistribuir nada.
 
 Todo se guarda en `localStorage` del navegador (alarmas, frases, diario,
 configuración e historial del vigía); las fotos/videos son solo de la
@@ -70,6 +80,16 @@ solo las frases de películas, sin llamar a ningún modelo.
 cliente en texto plano. Sirve para uso local o para tu propio dispositivo;
 no la despliegues en un sitio público sin poner la llamada detrás de un
 backend/proxy que la esconda.
+
+### Sobre las "Escenas de YouTube"
+
+El link lo eliges y lo pegas tú — la app no busca ni sugiere videos por su
+cuenta. Esto es deliberado: no automatizamos la búsqueda de contenido
+sensible (por ejemplo, videos de personas en situaciones de sufrimiento
+real) para usarlo como "combustible motivacional". Si quieres ese tipo de
+contraste para tu diario de gratitud, puedes pegar tú mismo el link de una
+fuente en la que confíes (una ONG, un documental) — la decisión y la
+responsabilidad de qué mostrar quedan de tu lado.
 
 ## Ideas para siguientes pasos
 

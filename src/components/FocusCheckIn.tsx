@@ -1,31 +1,50 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { randomMovieQuote } from '../data/movieQuotes';
 import { generatePepTalk, isAiAvailable } from '../services/groq';
+import { speak } from '../services/speech';
+import { YouTubeEmbed } from './YouTubeEmbed';
+import type { VideoClip, VoiceLocale } from '../types';
 
 interface Props {
   awayMinutes: number;
+  videoClips: VideoClip[];
+  voiceLocale: VoiceLocale;
   onResolve: (wasScrolling: boolean, task: string) => void;
 }
 
-export function FocusCheckIn({ awayMinutes, onResolve }: Props) {
+export function FocusCheckIn({ awayMinutes, videoClips, voiceLocale, onResolve }: Props) {
   const [stage, setStage] = useState<'ask' | 'challenge'>('ask');
   const [task, setTask] = useState('');
   const [pepTalk, setPepTalk] = useState<string | null>(null);
   const [pepTalkLoading, setPepTalkLoading] = useState(false);
   const [quote] = useState(() => randomMovieQuote());
+  const [videoClip] = useState<VideoClip | null>(() =>
+    videoClips.length === 0 ? null : videoClips[Math.floor(Math.random() * videoClips.length)],
+  );
+
+  const quoteText = voiceLocale.startsWith('es') ? quote.quoteEs : quote.quote;
 
   const startChallenge = () => {
     setStage('challenge');
+    speak(quoteText, voiceLocale);
     if (!isAiAvailable()) return;
     setPepTalkLoading(true);
-    generatePepTalk(awayMinutes, '').then((text) => {
+    generatePepTalk(awayMinutes, '', voiceLocale).then((text) => {
       setPepTalk(text);
       setPepTalkLoading(false);
+      if (text) speak(text, voiceLocale);
     });
   };
 
+  useEffect(() => {
+    return () => {
+      window.speechSynthesis?.cancel();
+    };
+  }, []);
+
   const handleConfirmTask = () => {
     if (!task.trim()) return;
+    window.speechSynthesis?.cancel();
     onResolve(true, task.trim());
   };
 
@@ -56,9 +75,11 @@ export function FocusCheckIn({ awayMinutes, onResolve }: Props) {
             <p className="movie-attribution">
               {quote.movie} — {quote.character}
             </p>
-            <p className="activation-affirmation">&ldquo;{quote.quote}&rdquo;</p>
+            <p className="activation-affirmation">&ldquo;{quoteText}&rdquo;</p>
             {pepTalkLoading && <p className="hint">Preparando tu empujón personalizado...</p>}
             {pepTalk && <p className="pep-talk">{pepTalk}</p>}
+
+            {videoClip && <YouTubeEmbed youtubeId={videoClip.youtubeId} label={videoClip.label} />}
 
             <div className="gratitude-challenge">
               <label htmlFor="focus-task">

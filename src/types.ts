@@ -31,3 +31,12 @@ export interface FocusSettings {
   enabled: boolean;
   thresholdMinutes: number;
 }
+
+export type VoiceLocale = 'es-ES' | 'es-419' | 'en-GB' | 'en-US';
+
+export interface VideoClip {
+  id: string;
+  url: string;
+  label: string;
+  youtubeId: string;
+}

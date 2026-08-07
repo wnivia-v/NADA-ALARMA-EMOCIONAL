@@ -8,15 +8,21 @@ import { GratitudeJournal } from './components/GratitudeJournal';
 import { ActivationScreen } from './components/ActivationScreen';
 import { FocusCheckIn } from './components/FocusCheckIn';
 import { FocusSettingsPanel } from './components/FocusSettingsPanel';
+import { VideoClipManager } from './components/VideoClipManager';
+import { VoiceSettings } from './components/VoiceSettings';
 import { MOVIE_QUOTES } from './data/movieQuotes';
-import type { GratitudeEntry, MediaItem } from './types';
+import type { GratitudeEntry, MediaItem, VideoClip, VoiceLocale } from './types';
 import {
   loadAffirmations,
   loadGratitude,
   loadIncludeMovieQuotes,
+  loadVideoClips,
+  loadVoiceLocale,
   saveAffirmations,
   saveGratitude,
   saveIncludeMovieQuotes,
+  saveVideoClips,
+  saveVoiceLocale,
 } from './storage';
 import { createId } from './utils';
 import './App.css';
@@ -32,23 +38,56 @@ export default function App() {
     snoozeActiveAlarm,
   } = useAlarmClock();
 
-  const { settings: focusSettings, updateSettings: updateFocusSettings, log: focusLog, pendingAwayMinutes, resolveCheckIn, simulateReturn } = useFocusWatchdog();
+  const {
+    settings: focusSettings,
+    updateSettings: updateFocusSettings,
+    log: focusLog,
+    pendingAwayMinutes,
+    resolveCheckIn,
+    simulateReturn,
+  } = useFocusWatchdog();
 
   const [media, setMedia] = useState<MediaItem[]>([]);
   const [affirmations, setAffirmations] = useState<string[]>(() => loadAffirmations());
   const [gratitude, setGratitude] = useState<GratitudeEntry[]>(() => loadGratitude());
   const [includeMovieQuotes, setIncludeMovieQuotes] = useState<boolean>(() => loadIncludeMovieQuotes());
+  const [videoClips, setVideoClips] = useState<VideoClip[]>(() => loadVideoClips());
+  const [voiceLocale, setVoiceLocale] = useState<VoiceLocale>(() => loadVoiceLocale());
 
   const handleToggleMovieQuotes = (value: boolean) => {
     setIncludeMovieQuotes(value);
     saveIncludeMovieQuotes(value);
   };
 
+  const handleChangeVoiceLocale = (locale: VoiceLocale) => {
+    setVoiceLocale(locale);
+    saveVoiceLocale(locale);
+  };
+
+  const handleAddVideoClip = (clip: Omit<VideoClip, 'id'>) => {
+    setVideoClips((prev) => {
+      const next = [...prev, { ...clip, id: createId() }];
+      saveVideoClips(next);
+      return next;
+    });
+  };
+
+  const handleRemoveVideoClip = (id: string) => {
+    setVideoClips((prev) => {
+      const next = prev.filter((c) => c.id !== id);
+      saveVideoClips(next);
+      return next;
+    });
+  };
+
   const alarmAffirmations = useMemo(() => {
     if (!includeMovieQuotes) return affirmations;
-    const movieTexts = MOVIE_QUOTES.map((q) => `"${q.quote}" — ${q.character}, ${q.movie}`);
+    const movieTexts = MOVIE_QUOTES.map((q) => {
+      const text = voiceLocale.startsWith('es') ? q.quoteEs : q.quote;
+      return `"${text}" — ${q.character}, ${q.movie}`;
+    });
     return [...affirmations, ...movieTexts];
-  }, [affirmations, includeMovieQuotes]);
+  }, [affirmations, includeMovieQuotes, voiceLocale]);
 
   const handleAddAffirmation = (text: string) => {
     setAffirmations((prev) => {
@@ -91,6 +130,8 @@ export default function App() {
           includeMovieQuotes={includeMovieQuotes}
           onToggleMovieQuotes={handleToggleMovieQuotes}
         />
+        <VoiceSettings locale={voiceLocale} onChange={handleChangeVoiceLocale} />
+        <VideoClipManager clips={videoClips} onAdd={handleAddVideoClip} onRemove={handleRemoveVideoClip} />
         <MediaLibrary
           media={media}
           onAdd={(items) => setMedia((prev) => [...prev, ...items])}
@@ -109,14 +150,21 @@ export default function App() {
         <ActivationScreen
           alarm={activeAlarm}
           media={media}
+          videoClips={videoClips}
           affirmations={alarmAffirmations}
+          voiceLocale={voiceLocale}
           onDismiss={handleDismiss}
           onSnooze={snoozeActiveAlarm}
         />
       )}
 
       {!activeAlarm && pendingAwayMinutes !== null && (
-        <FocusCheckIn awayMinutes={pendingAwayMinutes} onResolve={resolveCheckIn} />
+        <FocusCheckIn
+          awayMinutes={pendingAwayMinutes}
+          videoClips={videoClips}
+          voiceLocale={voiceLocale}
+          onResolve={resolveCheckIn}
+        />
       )}
     </div>
   );

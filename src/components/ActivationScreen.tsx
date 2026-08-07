@@ -1,24 +1,27 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { Alarm, MediaItem } from '../types';
+import type { Alarm, MediaItem, VideoClip, VoiceLocale } from '../types';
+import { speak } from '../services/speech';
+import { YouTubeEmbed } from './YouTubeEmbed';
 
 interface Props {
   alarm: Alarm;
   media: MediaItem[];
+  videoClips: VideoClip[];
   affirmations: string[];
+  voiceLocale: VoiceLocale;
   onDismiss: (gratitudeText: string) => void;
   onSnooze: () => void;
 }
 
-function speak(text: string) {
-  if (!('speechSynthesis' in window)) return;
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = 'es-ES';
-  utterance.rate = 0.95;
-  window.speechSynthesis.speak(utterance);
-}
-
-export function ActivationScreen({ alarm, media, affirmations, onDismiss, onSnooze }: Props) {
+export function ActivationScreen({
+  alarm,
+  media,
+  videoClips,
+  affirmations,
+  voiceLocale,
+  onDismiss,
+  onSnooze,
+}: Props) {
   const [affirmationIndex, setAffirmationIndex] = useState(0);
   const [gratitudeText, setGratitudeText] = useState('');
   const spokenIndexRef = useRef(-1);
@@ -28,6 +31,11 @@ export function ActivationScreen({ alarm, media, affirmations, onDismiss, onSnoo
     return media[Math.floor(Math.random() * media.length)];
   }, [media]);
 
+  const videoClip = useMemo(() => {
+    if (videoClips.length === 0) return null;
+    return videoClips[Math.floor(Math.random() * videoClips.length)];
+  }, [videoClips]);
+
   const currentAffirmation = affirmations[affirmationIndex % affirmations.length] ??
     'Hoy tienes todo lo que necesitas para levantarte con energía.';
 
@@ -35,13 +43,13 @@ export function ActivationScreen({ alarm, media, affirmations, onDismiss, onSnoo
     if (affirmations.length === 0) return;
     if (spokenIndexRef.current !== affirmationIndex) {
       spokenIndexRef.current = affirmationIndex;
-      speak(currentAffirmation);
+      speak(currentAffirmation, voiceLocale);
     }
     const rotate = setInterval(() => {
       setAffirmationIndex((i) => (i + 1) % Math.max(affirmations.length, 1));
     }, 8000);
     return () => clearInterval(rotate);
-  }, [affirmationIndex, affirmations, currentAffirmation]);
+  }, [affirmationIndex, affirmations, currentAffirmation, voiceLocale]);
 
   useEffect(() => {
     return () => {
@@ -69,6 +77,8 @@ export function ActivationScreen({ alarm, media, affirmations, onDismiss, onSnoo
         <p className="activation-time">{alarm.time}</p>
         <h1>{alarm.label}</h1>
         <p className="activation-affirmation">{currentAffirmation}</p>
+
+        {videoClip && <YouTubeEmbed youtubeId={videoClip.youtubeId} label={videoClip.label} />}
 
         <div className="gratitude-challenge">
           <label htmlFor="gratitude-input">
