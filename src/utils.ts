@@ -28,9 +28,9 @@ export function extractYouTubeId(url: string): string | null {
 
 /**
  * Extrae el ID numérico de un link de TikTok con formato
- * tiktok.com/@usuario/video/1234567890. Los links cortos (vm.tiktok.com,
- * vt.tiktok.com) no se pueden resolver desde el navegador sin backend, así
- * que devuelve null para esos — el usuario debe pegar el link completo.
+ * tiktok.com/@usuario/video/1234567890. Devuelve null si no lo reconoce
+ * (por ejemplo, links cortos como vm.tiktok.com/vt.tiktok.com, que no
+ * incluyen el ID en la URL y necesitan resolverse vía oEmbed).
  */
 export function extractTikTokVideoId(url: string): string | null {
   try {
@@ -40,6 +40,16 @@ export function extractTikTokVideoId(url: string): string | null {
     return match ? match[1] : null;
   } catch {
     return null;
+  }
+}
+
+/** True si el host es de la familia tiktok.com (incluye links cortos). */
+export function isTikTokUrl(url: string): boolean {
+  try {
+    const u = new URL(url.trim());
+    return u.hostname.replace(/^www\./, '').endsWith('tiktok.com');
+  } catch {
+    return false;
   }
 }
 

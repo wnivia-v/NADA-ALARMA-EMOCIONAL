@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { VideoClip } from '../types';
-import { parseVideoUrl } from '../utils';
+import { isTikTokUrl, parseVideoUrl } from '../utils';
 
 interface Props {
   clips: VideoClip[];
@@ -16,43 +16,66 @@ export function VideoClipManager({ clips, onAdd, onRemove }: Props) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const parsed = parseVideoUrl(url);
-    if (!parsed) {
-      setError(
-        'No reconozco ese link. Pega un link completo de YouTube (youtube.com/watch?v=..., youtu.be/...) o TikTok (tiktok.com/@usuario/video/...). Los links cortos de TikTok (vt.tiktok.com) no funcionan, usa el link completo.',
-      );
+    const trimmedUrl = url.trim();
+    const parsed = parseVideoUrl(trimmedUrl);
+    setSubmitting(true);
+    setError('');
+
+    if (parsed) {
+      const thumbnail =
+        parsed.provider === 'youtube'
+          ? `https://img.youtube.com/vi/${parsed.externalId}/hqdefault.jpg`
+          : await fetchTikTokThumbnail(trimmedUrl);
+      onAdd({
+        url: trimmedUrl,
+        label: label.trim() || 'Escena motivadora',
+        provider: parsed.provider,
+        externalId: parsed.externalId,
+        thumbnail,
+      });
+      setUrl('');
+      setLabel('');
+      setSubmitting(false);
       return;
     }
 
-    setSubmitting(true);
-    let thumbnail: string | undefined;
-    let finalLabel = label.trim();
-
-    if (parsed.provider === 'youtube') {
-      thumbnail = `https://img.youtube.com/vi/${parsed.externalId}/hqdefault.jpg`;
-    } else {
+    // Links cortos de TikTok (vm.tiktok.com, vt.tiktok.com) no traen el ID
+    // en la URL — se resuelven pidiéndole a TikTok su oEmbed con el link
+    // corto tal cual; su servidor sigue el redirect por nosotros.
+    if (isTikTokUrl(trimmedUrl)) {
       try {
-        const res = await fetch(`https://www.tiktok.com/oembed?url=${encodeURIComponent(url.trim())}`);
+        const res = await fetch(`https://www.tiktok.com/oembed?url=${encodeURIComponent(trimmedUrl)}`);
         if (res.ok) {
           const data = await res.json();
-          thumbnail = data.thumbnail_url;
-          if (!finalLabel) finalLabel = data.title || '';
+          if (data.embed_product_id) {
+            onAdd({
+              url: trimmedUrl,
+              label: label.trim() || data.title || 'Escena motivadora',
+              provider: 'tiktok',
+              externalId: data.embed_product_id,
+              thumbnail: data.thumbnail_url,
+            });
+            setUrl('');
+            setLabel('');
+            setSubmitting(false);
+            return;
+          }
         }
+        setError(
+          'No pude resolver ese link corto de TikTok. Revisa tu conexión, o ábrelo en el navegador y pega la URL completa que te queda (tiktok.com/@usuario/video/...).',
+        );
       } catch {
-        // Sin thumbnail/preview si TikTok no responde; el clip se agrega igual.
+        setError(
+          'No pude conectar con TikTok para resolver el link corto. Revisa tu conexión, o ábrelo en el navegador y pega la URL completa que te queda (tiktok.com/@usuario/video/...).',
+        );
       }
+      setSubmitting(false);
+      return;
     }
 
-    onAdd({
-      url: url.trim(),
-      label: finalLabel || 'Escena motivadora',
-      provider: parsed.provider,
-      externalId: parsed.externalId,
-      thumbnail,
-    });
-    setUrl('');
-    setLabel('');
-    setError('');
+    setError(
+      'No reconozco ese link. Pega un link de YouTube (youtube.com/watch?v=..., youtu.be/...) o TikTok (tiktok.com/..., vm.tiktok.com/...).',
+    );
     setSubmitting(false);
   };
 
@@ -60,9 +83,10 @@ export function VideoClipManager({ clips, onAdd, onRemove }: Props) {
     <section className="panel">
       <h2>Escenas de YouTube y TikTok</h2>
       <p className="hint">
-        Pega el link de la escena, video o clip que te dé energía. Se incrusta con el reproductor
-        oficial de cada plataforma (nada se descarga ni se redistribuye). Aparece durante la
-        alarma y en el reto del vigía anti-scroll.
+        Pega el link de la escena, video o clip que te dé energía — sirven tanto los links largos
+        como los cortos para compartir (vm.tiktok.com). Se incrusta con el reproductor oficial de
+        cada plataforma (nada se descarga ni se redistribuye). Aparece durante la alarma y en el
+        reto del vigía anti-scroll.
       </p>
       <form className="affirmation-form" onSubmit={handleSubmit}>
         <input
@@ -99,4 +123,15 @@ export function VideoClipManager({ clips, onAdd, onRemove }: Props) {
       </ul>
     </section>
   );
+}
+
+async function fetchTikTokThumbnail(url: string): Promise<string | undefined> {
+  try {
+    const res = await fetch(`https://www.tiktok.com/oembed?url=${encodeURIComponent(url)}`);
+    if (!res.ok) return undefined;
+    const data = await res.json();
+    return data.thumbnail_url;
+  } catch {
+    return undefined;
+  }
 }
